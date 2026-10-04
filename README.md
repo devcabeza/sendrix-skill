@@ -3,66 +3,103 @@
 [![skills.sh](https://img.shields.io/badge/skills.sh-sendrix--skill-blue?style=flat-square)](https://skills.sh)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 
-Official [skills.sh](https://skills.sh) package for integrating **Sendrix** transactional email gateway & proxy into your projects using AI coding agents (**Antigravity**, **Claude Code**, **Cursor**, **Windsurf**, and **GitHub Copilot**).
+Paquete oficial de [skills.sh](https://skills.sh) para que agentes de IA (**Antigravity**, **Claude Code**, **Cursor**, **Windsurf**, **GitHub Copilot**) integren y operen **Sendrix**, la pasarela/proxy de correo transaccional, con contexto completo del producto.
 
 ---
 
-## ⚡ Installation
+## ⚡ Instalación
 
-Install directly into your project using the standard `skills` CLI:
+Instala la skill directamente en tu proyecto con el CLI estándar de `skills`:
 
 ```bash
 npx skills add devcabeza/sendrix-skill
 ```
 
-This will automatically configure the skill inside your agent's directory (e.g. `.agents/skills/sendrix`, `.claude/skills/sendrix`, or `.cursor/rules/sendrix.mdc`).
+Esto configura la skill en el directorio de tu agente (p. ej. `.agents/skills/sendrix`, `.claude/skills/sendrix` o `.cursor/rules/sendrix.mdc`).
+
+### Instalación desde una instancia de Sendrix
+
+También puedes instalar la última versión desde el propio servidor:
+
+```bash
+curl -fsSL $SENDRIX_BASE_URL/skill/install.sh | bash
+```
 
 ---
 
-## 🤖 What your AI Agent Learns
+## 🤖 Qué aprende tu agente
 
-Once installed, your AI agent understands how to:
+Una vez instalada, tu agente entiende **todo el producto Sendrix**:
 
-1. **Configure Environment Variables**:
-   ```dotenv
-   SENDRIX_BASE_URL=https://sendrix.alejandrocabeza.dev
-   SENDRIX_KEY=sndx_live_xxxxxxxxxxxxxxxxxxxxxxxx
-   ```
-2. **Send Transactional Emails**:
-   - Single email sending via `POST /api/v1/send`
-   - Batch email sending via `POST /api/v1/batch` (up to 100 emails)
-   - Asynchronous queueing (`async: true` or `Prefer: respond-async`)
-3. **Handle Framework Integrations**:
-   - **Laravel**: Zero-change custom mail transport (`SendrixTransport`), Mailables, Horizon background queue (`emails`), and 429 rate limit backoff.
-   - **Node.js & TypeScript**: Native fetch client with retries and exponential backoff, Next.js App Router support.
-   - **Python**: Requests/httpx client with retry wrappers.
-4. **Enforce Rate Limits & Resilience**:
-   - Manages Sendrix rate limits (5 req/min) using exponential backoff and `release()`.
-   - Prevents duplicate sends on `duplicated: true` responses.
-5. **Verify Outbound Webhooks**:
-   - Cryptographic HMAC-SHA256 signature verification (`X-Sendrix-Signature`).
+1. **Autenticación y configuración**
+   - `SENDRIX_BASE_URL` y `SENDRIX_KEY`.
+   - Claves de proyecto `sndx_live_*` (producción) y `sndx_test_*` (sandbox).
+   - Cabeceras `Authorization: Bearer` o `X-Sendrix-Key`.
 
----
+2. **Envío de correos**
+   - Individual: `POST /api/v1/send`.
+   - Por lotes (1–100): `POST /api/v1/batch` con la clave `batch`.
+   - Asíncrono con Horizon: `async: true`, `Prefer: respond-async`, `X-Sendrix-Async`.
+   - Adjuntos en base64 (≤ 10 MB) y plantillas con `{{ variables }}`.
 
-## 💡 Prompt Your Agent
+3. **Trazabilidad**
+   - Estado de entrega: `GET /api/v1/emails/{id}`.
+   - Ciclo de vida: `queued → sending → sent → delivered` (+ `failed`, `bounced`, `complained`, `sandbox`).
 
-After installing, simply ask your agent in your project chat:
+4. **Protección de entregabilidad**
+   - Supresiones por `hard_bounce`, `spam_complaint`, `manual`, `unsubscribe`.
+   - Rechazo `422 RecipientSuppressed` antes de enviar/encolar.
 
-> *"He instalado el skill de Sendrix. Por favor, integra el envío de correos transaccionales con Sendrix para los correos de bienvenida y recuperación de contraseña en segundo plano."*
+5. **Webhooks salientes firmados**
+   - Verificación HMAC-SHA256 (`X-Sendrix-Signature`), eventos `email.*`, reintentos e idempotencia.
 
----
+6. **Proveedores y failover**
+   - Resend primario; Postmark o SMTP como respaldo con fallback automático.
 
-## 📚 References & Guides
+7. **Integraciones por framework**
+   - **Laravel**: `SendrixTransport` (mailer nativo), Mailables, cola Horizon `emails`, adjuntos, Pest.
+   - **Node.js / TypeScript**: cliente `fetch` tipado, lotes, estados y verificación de webhooks.
+   - **Python**: cliente `requests`/`httpx` con reintentos.
 
-- [SKILL.md](./SKILL.md): Main agent instruction file with dynamic capability discovery.
-- [Laravel Integration Guide](./references/laravel.md): Mail transport, queue jobs, Pest tests.
-- [Node.js & TypeScript Guide](./references/nodejs.md): TypeScript client and Next.js actions.
-- [Python Integration Guide](./references/python.md): Python requests client.
-- [API Reference](./references/api-reference.md): Endpoints, schemas, and response codes.
-- [Webhooks Verification](./references/webhooks.md): HMAC verification in PHP and Node.
+8. **Despliegue**
+   - Self-hosting con Docker/Coolify, PostgreSQL + Redis + Horizon, variables de entorno y health checks.
 
 ---
 
-## License
+## 📚 Referencias
+
+- [SKILL.md](./SKILL.md) — instrucciones principales para el agente.
+- [api-reference.md](./references/api-reference.md) — endpoints, esquemas y códigos de respuesta.
+- [templates.md](./references/templates.md) — plantillas, variables y constructor visual.
+- [sandbox.md](./references/sandbox.md) — modo sandbox y buzón de pruebas.
+- [suppressions.md](./references/suppressions.md) — rebotes, quejas y lista de supresión.
+- [webhooks.md](./references/webhooks.md) — firma HMAC y procesamiento de eventos.
+- [providers-failover.md](./references/providers-failover.md) — Resend, Postmark y SMTP.
+- [laravel.md](./references/laravel.md) — integración Laravel.
+- [nodejs.md](./references/nodejs.md) — integración Node.js / TypeScript.
+- [python.md](./references/python.md) — integración Python.
+- [deployment.md](./references/deployment.md) — despliegue y operación.
+
+---
+
+## 💡 Prompt de ejemplo
+
+Tras instalar, pídele a tu agente:
+
+> *"He instalado la skill de Sendrix. Integra el envío de correos transaccionales con Sendrix para bienvenida y recuperación de contraseña, en segundo plano con cola, y añade verificación de webhooks."*
+
+---
+
+## ⚡ Descubrimiento dinámico
+
+Sendrix evoluciona. El agente puede consultar la especificación en vivo en:
+
+- `{SENDRIX_BASE_URL}/skill.md`
+- `{SENDRIX_BASE_URL}/llms.txt`
+- `{SENDRIX_BASE_URL}/llms-full.txt`
+
+---
+
+## Licencia
 
 MIT License © 2026 Sendrix / devcabeza
