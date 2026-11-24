@@ -1,6 +1,6 @@
-# Sendrix — Despliegue y operación (self-hosting)
+# Sendrix — Despliegue y arquitectura de producción
 
-Sendrix es una aplicación **Laravel 13 + Livewire 4** que se autoaloja con PostgreSQL y Redis, y usa **Laravel Horizon** para las colas. Esta guía cubre Docker local y producción (Coolify).
+Sendrix es una plataforma **Laravel 13 + Livewire 4** con PostgreSQL y Redis, y usa **Laravel Horizon** para las colas. Esta guía cubre la arquitectura de producción (Coolify) y desarrollo local.
 
 ---
 

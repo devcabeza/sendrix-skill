@@ -9,7 +9,7 @@ metadata:
 
 # Sendrix — Transactional Email Gateway & Proxy
 
-Sendrix is a self-hosted **transactional email gateway and proxy**. Your applications send email to Sendrix over a single HTTP API using a project API key; Sendrix handles the rest: provider delivery, retries/queues, delivery logging, suppression lists, templates, sandbox testing, outbound webhooks and provider failover.
+Sendrix is a managed cloud **transactional email gateway and proxy**. Your applications send email to Sendrix over a single HTTP API using a project API key; Sendrix handles the rest: provider delivery, retries/queues, delivery logging, suppression lists, templates, sandbox testing, outbound webhooks and provider failover.
 
 Instead of talking to an email provider (Resend, Postmark, SMTP) directly from every app, you point every app at Sendrix. Sendrix centralises credentials, deliverability protection and observability.
 
@@ -54,7 +54,7 @@ Instead of talking to an email provider (Resend, Postmark, SMTP) directly from e
 | Outbound webhooks (signed HMAC) | project webhook config | [webhooks.md](references/webhooks.md) |
 | Provider failover | Resend → Postmark / SMTP | [providers-failover.md](references/providers-failover.md) |
 | Health check | `GET /api/v1/health` | [api-reference.md](references/api-reference.md) |
-| Self-hosting / infra | Docker + Coolify | [deployment.md](references/deployment.md) |
+| Cloud infrastructure | Anycast L7 / High Availability | [deployment.md](references/deployment.md) |
 
 Framework-specific copy-paste integrations: [Laravel](references/laravel.md) · [Node.js / TypeScript](references/nodejs.md) · [Python](references/python.md).
 
@@ -372,5 +372,5 @@ See [providers-failover.md](references/providers-failover.md).
 - [Sandbox](references/sandbox.md) — test keys, sandbox mode and captured emails.
 - [Suppressions](references/suppressions.md) — bounce/complaint handling and suppression management.
 - [Providers & Failover](references/providers-failover.md) — connecting Resend, Postmark and SMTP.
-- [Deployment](references/deployment.md) — Docker/Coolify self-hosting, services and environment variables.
+- [Deployment](references/deployment.md) — Production architecture, services and environment variables.
 - [API Reference](references/api-reference.md) — exhaustive schemas, response codes and curl examples.

@@ -61,8 +61,8 @@ Una vez instalada, tu agente entiende **todo el producto Sendrix**:
    - **Node.js / TypeScript**: cliente `fetch` tipado, lotes, estados y verificación de webhooks.
    - **Python**: cliente `requests`/`httpx` con reintentos.
 
-8. **Despliegue**
-   - Self-hosting con Docker/Coolify, PostgreSQL + Redis + Horizon, variables de entorno y health checks.
+8. **Despliegue y Arquitectura**
+   - Arquitectura de producción con Docker/Coolify, PostgreSQL + Redis + Horizon, variables de entorno y health checks.
 
 ---
 
